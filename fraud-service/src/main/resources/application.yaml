@@ -5,6 +5,22 @@ spring:
   application:
     name: FRAUD-SERVICE
 
+
+  kafka:
+      bootstrap-servers: localhost:9092
+
+      consumer:
+        group-id: fraud-group
+
+        auto-offset-reset: latest
+
+        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+        value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+  profiles:
+    active: local
+
   datasource:
     url: jdbc:postgresql://localhost:5432/insurance_system
     username: postgres
@@ -21,6 +37,8 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka
 
-openrouter:
-  api:
-    key: YOUR_OPENROUTER_KEY
+logging:
+  level:
+    org.apache.kafka: WARN
+
+

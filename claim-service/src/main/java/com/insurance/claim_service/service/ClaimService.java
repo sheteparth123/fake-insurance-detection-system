@@ -4,6 +4,8 @@ package com.insurance.claim_service.service;
 
 import com.insurance.claim_service.dto.ClaimRequest;
 import com.insurance.claim_service.entity.*;
+import com.insurance.claim_service.event.ClaimCreatedEvent;
+import com.insurance.claim_service.kafka.KafkaProducer;
 import com.insurance.claim_service.repository.ClaimRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 public class ClaimService {
 
     private final ClaimRepository claimRepository;
+    private final KafkaProducer kafkaProducer;
 
     public String createClaim(
             ClaimRequest request
@@ -35,7 +38,15 @@ public class ClaimService {
                 .riskLevel(RiskLevel.LOW)
                 .build();
 
-        claimRepository.save(claim);
+        Claim savedClaim=claimRepository.save(claim);
+        ClaimCreatedEvent event =
+                ClaimCreatedEvent.builder()
+                        .claimId(savedClaim.getId())
+                        .claimAmount(savedClaim.getClaimAmount())
+                        .description(savedClaim.getDescription())
+                        .build();
+
+        kafkaProducer.sendClaimEvent(event);
 
         return "Claim Submitted Successfully";
     }
