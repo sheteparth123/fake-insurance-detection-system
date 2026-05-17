@@ -22,5 +22,6 @@ public class FraudAnalysis {
 
     private String riskLevel;
 
+    @Column(columnDefinition = "TEXT")
     private String reason;
 }

@@ -1,0 +1,19 @@
+# IntelliJ
+.idea/
+*.iml
+
+# Maven
+target/
+
+# Logs
+*.log
+
+# Local config
+application-local.yaml
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
