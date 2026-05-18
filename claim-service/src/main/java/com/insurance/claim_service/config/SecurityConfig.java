@@ -10,6 +10,8 @@ import org.springframework.security.config.http.
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.
         UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @RequiredArgsConstructor
@@ -23,6 +25,7 @@ public class SecurityConfig {
     ) throws Exception {
 
         http
+                .cors(cors -> {})
                 .csrf(csrf -> csrf.disable())
 
                 .sessionManagement(session ->
@@ -46,5 +49,29 @@ public class SecurityConfig {
                 );
 
         return http.build();
+    }
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+
+        return new WebMvcConfigurer() {
+
+            @Override
+            public void addCorsMappings(
+                    CorsRegistry registry
+            ) {
+
+                registry.addMapping("/**")
+
+                        .allowedOrigins(
+                                "http://localhost:5173"
+                        )
+
+                        .allowedMethods("*")
+
+                        .allowedHeaders("*")
+
+                        .allowCredentials(true);
+            }
+        };
     }
 }
